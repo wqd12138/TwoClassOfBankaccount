@@ -1,5 +1,9 @@
 #include<iostream>
+#include<fstream>
+#include<ctime>
 #include"brass.h"
+
+using std::ios;
 using std::cout;
 using std::string;
 using std::endl;
@@ -19,6 +23,7 @@ void Brass::Deposit(double amt)
 		cout<<"Negative deposit not allowed;"
 			<<"deposit is canelled."<<endl;
 	balance += amt;
+	RecordLog(amt,true);
 }
 double Brass::Balance() const
 {
@@ -36,6 +41,7 @@ void Brass::WithDraw(double amt)
 	else
 		cout<<"Withdrawal amout of $"<<amt<<"exceeds balance."<<endl<<"Withdrawal cancelled."<<endl;
 	restore(initialState,prec);
+	RecordLog(amt,false);
 }
 void Brass::ViewAcct() const
 {
@@ -45,6 +51,31 @@ void Brass::ViewAcct() const
 	cout<<"Account Number: "<<accNum<<endl;
 	cout<<"Balance: $"<<balance<<endl;
 	restore(initialState,prec);
+}
+void Brass::RecordLog(double dnum,bool isDeposit)
+{
+	std::ofstream ofs;
+	ofs.open("./BankLog.txt",ios::out|ios::app);//相对路径
+	if (!ofs.is_open())
+		cout<<"failed to open BankLog"<<endl;
+	// 基于当前系统的当前日期/时间
+	time_t now = time(0);
+	// 把 now 转换为字符串形式
+	char* dt = ctime(&now);
+	ofs<<dt;
+	if (isDeposit)
+	{
+		ofs<<fullName<<" 的账户"<<accNum<<"余额为： $"<<Balance()<<endl;
+		ofs<<fullName<<" 的账户"<<accNum<<"存入 $"<<dnum<<endl;
+		ofs<<fullName<<" 的账户"<<accNum<<"余额为： $"<<Balance()<<endl;
+	}
+	else
+	{
+		ofs<<fullName<<" 的账户"<<accNum<<"余额为： $"<<Balance()<<endl;
+		ofs<<fullName<<" 的账户"<<accNum<<"支出 $"<<dnum<<endl;
+		ofs<<fullName<<" 的账户"<<accNum<<"余额为： $"<<Balance()<<endl;
+	}
+	ofs.close();
 }
 BrassPlus::BrassPlus(const std::string &s,long an ,double bal ,double m1,double r ):Brass(s,an,bal)
 {

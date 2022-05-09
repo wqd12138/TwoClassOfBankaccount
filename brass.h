@@ -10,6 +10,7 @@ public:
 	double Balance() const;
 	virtual void WithDraw(double amt);
 	virtual void ViewAcct() const;
+	void RecordLog(double,bool);
 	virtual ~Brass(){}
 private:
 	std::string fullName;
@@ -23,7 +24,7 @@ public:
 	BrassPlus(const std::string &s="NoName",long an =-1,double bal =0.0,double m1=500,double r =0.11125);
 	BrassPlus(const Brass &ba,double m1=500.0,double r=0.11125);
 	virtual void ViewAcct() const;
-	virtual void WithDraw(double amt) ;
+	virtual void WithDraw(double amt);
 	void ResetMax(double m){maxLoan = m;}
 	void ResetRate(double r){rate = r;}
 	void ReaetQwes(){owesBank=0.0;}
